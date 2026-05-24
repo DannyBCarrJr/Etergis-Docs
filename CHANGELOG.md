@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.1] - 2026-05-24 — Edge Hotfix
+
+### Fixed
+
+- **Apple Sign-In on Android**: tapping "Sign in with Apple" now completes the flow correctly. Prior to this fix the callback returned to the app with a blank screen and a "canceled" notification — the OAuth redirect wasn't transferring control back to the app cleanly. iOS Apple Sign-In and web Apple Sign-In were unaffected.
+
+### Operational
+
+- Cloudflare Email Routing now covers all topical inboxes (`hello`, `support`, `beta`, `legal`, `abuse`, `security`, `billing`, `privacy`, `alerts`, `tls-reports`). Beta-access requests and security disclosures land reliably; TLSRPT aggregate reports are received.
+
+> **No app update required** — this was an edge-side fix. iOS and Android apps from v0.4.0 work as-is.
+
+---
+
 ## [0.4.0] - 2026-05-20 — Cryptographic Overhaul & Auth UX
 
 ### Breaking

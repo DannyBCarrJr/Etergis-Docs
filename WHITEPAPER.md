@@ -81,12 +81,12 @@ Etergis enforces end-to-end protection with three pillars:
 - **Audit Journal:** Append-only log of all events, signatures, and state
   changes. Exportable for SOC and compliance.
 
-### Cryptographic Baseline (v0.2.0 — actual implementation)
+### Cryptographic Baseline (v0.4.0 — actual implementation)
 
 This section was rewritten in May 2026 to match the shipped code. Previous
 versions of this document made aspirational claims (e.g. Shamir Secret Sharing
 as the primary mechanism, Argon2id for KEK derivation) that did not match the
-v0.1.0 implementation. v0.2.0 closes the gaps and this section is now
+v0.1.0 implementation. v0.4.0 closes the gaps and this section is now
 authoritative.
 
 #### Content encryption
@@ -133,10 +133,10 @@ authoritative.
   `tag_b64`, `aad`
 - Current version: 2 (Argon2id)
 - v1 (PBKDF2-HMAC-SHA256, 600k iterations) envelopes were used in v0.1 and are
-  NOT readable by v0.2+. v0.1 → v0.2 is a clean break; existing users
+  NOT readable by v0.4+. v0.1 → v0.4 is a clean break; existing users
   re-enrolled their vaults at upgrade.
 
-#### Threshold cryptography (planned — not in v0.1 / v0.2)
+#### Threshold cryptography (planned — not in current production through v0.4)
 - **Status:** Recipient-based key wrapping ships today. Shamir Secret Sharing
   of the DEK is a planned enhancement, primarily to support custodian-based
   release without the recipient needing to be online at release time.
@@ -299,13 +299,18 @@ authoritative.
 
 ## Appendix B: Changelog of cryptographic-relevant changes
 
-- **2026-05-17 (v0.2.0):** Major crypto modernization. PBKDF2 → Argon2id for
+- **2026-05-20 (v0.4.0):** Major crypto modernization. PBKDF2 → Argon2id for
   KEK derivation. AAD added to all AES-GCM operations. HKDF domain-separation
   salt + info. Versioned envelope format (EnvelopeV2). NIST 800-63B password
   policy. Resend email migration. Clean break — v0.1 envelopes are not readable.
+- **2026-05-16 (v0.3.3):** Closed Apple Sign-In aud/iss bypass (account-takeover
+  vector). Replaced Google tokeninfo debug endpoint with JWKS local
+  verification. Prevented silent account linking by email. JWT algorithm
+  hardcoded to HS256 (closes alg:none confusion). Auth-endpoint rate limiting
+  at Cloudflare edge.
 - **2026-04 (v0.1.0):** Initial public version. Recipient-based key wrapping,
   client-side encryption, dead-man's switch heartbeat, FastAPI backend.
 - **Pre-release:** Whitepaper originally described Shamir Secret Sharing and
   Argon2id as shipping features; these were architectural targets that did
-  not match the v0.1.0 implementation. v0.2.0 brings KDF in line with the
+  not match the v0.1.0 implementation. v0.4.0 brings KDF in line with the
   documented intent. SSS remains on the roadmap.
