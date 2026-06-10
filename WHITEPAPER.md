@@ -1,6 +1,6 @@
 # Etergis: Secure Secret Orchestration with Dead‑Man's‑Switch Controls
 
-> **Document version:** 2026-05-20 — reflects v0.4.0 implementation
+> **Document version:** 2026-06-09 — reflects v0.5.2 implementation
 >
 > Public technical reference for security reviewers and prospective users.
 
@@ -266,8 +266,7 @@ authoritative.
 
 ## Implementation Notes
 
-- **Client platforms:** Flutter web (production), iOS and Android (TestFlight /
-  Play Store internal testing). CLI is on the v0.5+ roadmap.
+- **Client platforms:** Flutter web (production at app.etergis.com), iOS (App Store review), Android (Google Play closed testing). CLI is on the roadmap.
 - **Interoperability:** QR spec for share encoding planned for v0.5+ (when SSS
   ships). Recipient-based wraps today use the EnvelopeV2 JSON format.
 - **Availability:** Multi-region orchestration with zero-secrets architecture.
@@ -282,7 +281,8 @@ authoritative.
 |---------|--------|-----------|
 | v0.1.0 | shipped Apr 2026 | Recipient-based key wrap (X25519+HKDF+AES-GCM), heartbeat monitor, Flutter web client, FastAPI/PostgreSQL backend, append-only audit log |
 | v0.4.0 | shipped May 2026 | Crypto modernization (PBKDF2→Argon2id, AAD on AES-GCM, HKDF domain separation, EnvelopeV2), auth UX overhaul (Google/Apple SSO), NIST 800-63B password policy, Cloudflare WAF rate limiting, self-hosted hash-wasm |
-| v0.5.0 | planned | Policy engine: time-locks, multi-approver flows; signed audit export; CLI MVP |
+| v0.5.0 | shipped Jun 2026 | Production launch, Stripe live billing (Personal/Family tiers), iOS + Android submissions, landing page redesign, rate limiting restoration |
+| v0.5.2 | shipped Jun 2026 | Owner role + RBAC hierarchy, push notifications (Firebase), RFC 9116 security.txt, admin console (billing + health), internal plan tier |
 | v0.6.0 | planned | Shamir Secret Sharing (DEK split), QR-encoded shares, custodian mobile app with hardware key integration |
 | v1.0.0 | planned | Formal crypto review, SOC 2 Type II audit, HSM-backed service attestations, enterprise SSO, WebAuthn |
 
@@ -299,6 +299,12 @@ authoritative.
 
 ## Appendix B: Changelog of cryptographic-relevant changes
 
+- **2026-06-07 (v0.5.2):** Owner role added above admin. Push notifications via
+  Firebase (no cryptographic impact — notification metadata only, no secret
+  content transmitted via push). RFC 9116 security.txt PGP-signed with Ed25519.
+- **2026-06-05 (v0.5.0):** Production launch. No cryptographic changes from
+  v0.4.0. Rate limiting fully restored on all auth endpoints (Cloudflare WAF +
+  in-app per-IP middleware).
 - **2026-05-20 (v0.4.0):** Major crypto modernization. PBKDF2 → Argon2id for
   KEK derivation. AAD added to all AES-GCM operations. HKDF domain-separation
   salt + info. Versioned envelope format (EnvelopeV2). NIST 800-63B password

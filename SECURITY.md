@@ -20,6 +20,12 @@
 4. **Self-describing envelopes.** KDF parameters travel with the ciphertext. Future parameter upgrades don't break old envelopes.
 5. **Domain separation everywhere.** HKDF info strings and AAD constants are unique per use-case. Reusing a derived key across contexts is structurally prevented.
 
+## Zero-Knowledge Scope
+
+**We cannot access:** Secret content, decryption keys, vault passphrases, plaintext attachments.
+
+**We can access (metadata):** Email addresses, recipient emails, check-in timestamps, encrypted blob sizes, subscription status, authentication logs.
+
 ## Authentication
 
 - Short-lived JWT access tokens (60 min) with HS256 signing (algorithm hardcoded — no alg:none confusion)
@@ -28,6 +34,28 @@
 - Rate limiting: Cloudflare WAF edge rules + in-app per-IP middleware
 - Leaked credential blocking via Cloudflare WAF
 - NIST SP 800-63B password policy (12-char minimum, zxcvbn scoring, HIBP k-anonymity breach check)
+- Token version column — password reset invalidates all sessions
+
+## Access Control (RBAC)
+
+Role hierarchy: `user` → `admin` → `owner`
+
+- **user** — default role, standard access
+- **admin** — user management, billing overview, server health
+- **owner** — can grant internal plans, promote/demote admins, full authority
+- **First owner:** Bootstrapped at startup via `BOOTSTRAP_ADMIN_EMAIL` — idempotent, audited
+- **Subsequent admins:** Promoted via admin console — owner-only, audited
+- **No env-based fallback.** Role state lives in the DB only.
+
+## Infrastructure Security
+
+- RFC 9116 security.txt (PGP clear-signed, Ed25519)
+- MTA-STS enforced on email domain
+- Cloudflare WAF with rate limiting, bot management, and leaked credential blocking
+- CSP, HSTS, X-Frame-Options, X-Content-Type-Options headers enforced
+- CI: Trivy vulnerability scanning, Python test suite (42+ tests)
+- Secrets stored in GitHub encrypted secrets and Render env vars (never in code)
+- Docker images built with non-root user
 
 ## Threat Model
 
@@ -48,11 +76,13 @@
 If you discover a security vulnerability:
 
 1. **Email:** [security@etergis.com](mailto:security@etergis.com)
-2. **Acknowledgment:** Within 48 hours
-3. **Fix timeline:** Within 7 days
-4. **Critical patches:** Within 24 hours
+2. **PGP:** Available at [etergis.com/.well-known/security.txt](https://etergis.com/.well-known/security.txt)
+3. **Full policy:** [Vulnerability Disclosure Policy](https://etergis.com/security/vulnerability-disclosure-policy.html)
+4. **Acknowledgment:** Within 48 hours
+5. **Critical patches:** Within 24 hours
+6. **Safe harbor:** We do not pursue legal action against good-faith security researchers
 
-We do not currently operate a paid bug bounty program, but we credit responsible disclosures in our security acknowledgments.
+We credit responsible disclosures in our [Hall of Fame](https://etergis.com/security/hall-of-fame.html).
 
 ## Key Rotation Policy
 

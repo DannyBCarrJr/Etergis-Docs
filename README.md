@@ -5,8 +5,9 @@
 Etergis is an end-to-end encrypted dead-man's switch platform. It ensures sensitive information reaches the right people — automatically, securely, on your terms — only when it matters.
 
 🔗 **Website:** [etergis.com](https://etergis.com)  
-📧 **Beta access:** [beta@etergis.com](mailto:beta@etergis.com?subject=Beta%20Access%20Request)  
-🛡️ **Security contact:** [security@etergis.com](mailto:security@etergis.com)
+🔗 **App:** [app.etergis.com](https://app.etergis.com)  
+🛡️ **Security contact:** [security@etergis.com](mailto:security@etergis.com)  
+🛡️ **Vulnerability disclosure:** [etergis.com/security/vulnerability-disclosure-policy.html](https://etergis.com/security/vulnerability-disclosure-policy.html)
 
 ---
 
@@ -28,7 +29,7 @@ Etergis is an end-to-end encrypted dead-man's switch platform. It ensures sensit
 
 | Layer | Algorithm |
 |-------|-----------|
-| Content encryption | AES-256-GCM with AAD binding |
+| Content encryption | AES-256-GCM with AAD binding (secret_id) |
 | Key exchange | X25519 ECDH (ephemeral sender, forward secrecy) |
 | Key derivation | HKDF-SHA256 with domain-separated salt + info |
 | Vault passphrase | Argon2id (m=64 MiB, t=3, p=1) |
@@ -49,10 +50,17 @@ The server **does** see (metadata):
 - Check-in timestamps
 - Subscription status
 
+## Platforms
+
+| Platform | Status |
+|----------|--------|
+| Web | Live (app.etergis.com) |
+| iOS | App Store review |
+| Android | Closed testing (Google Play) |
+
 ## Status
 
-**Version:** 0.4.0 (closed beta)  
-**Platforms:** iOS (TestFlight), Android (Play Store closed testing), Web  
+**Version:** 0.5.2 (closed beta)  
 **Owner:** Carr Digital LLC · Charlotte, NC  
 **Trademark:** Etergis™ (USPTO Serial No. 99813385)
 
@@ -63,9 +71,10 @@ The server **does** see (metadata):
 If you discover a security vulnerability, please report it responsibly:
 
 - Email: [security@etergis.com](mailto:security@etergis.com)
+- PGP: Available at [etergis.com/.well-known/security.txt](https://etergis.com/.well-known/security.txt)
+- Full policy: [Vulnerability Disclosure Policy](https://etergis.com/security/vulnerability-disclosure-policy.html)
 - We acknowledge within 48 hours
 - Critical vulnerabilities patched within 24 hours
-- See [SECURITY.md](SECURITY.md) for full policy
 
 ---
 
