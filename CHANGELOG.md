@@ -1,12 +1,12 @@
 # Changelog
 
-## [0.5.2] - 2026-06-07 — Security Compliance, Owner Role, Push Notifications
+## [0.5.2] - 2026-06-07: Security Compliance, Owner Role, Push Notifications
 
 ### Added
 
 - RFC 9116 security.txt (PGP clear-signed, Ed25519, SHA-512)
 - Vulnerability Disclosure Policy with safe harbor language
-- Owner role (above admin) — only owner can grant internal plans or promote admins
+- Owner role (above admin): only owner can grant internal plans or promote admins
 - Internal plan tier (unlimited, no billing, no expiry)
 - Push notifications via Firebase Cloud Messaging (Android + iOS)
 - Admin console: billing overview (MRR, plan distribution)
@@ -24,7 +24,7 @@
 
 ---
 
-## [0.5.1] - 2026-06-06 — Plan Consistency, Legal Hardening, SMS, UI Polish
+## [0.5.1] - 2026-06-06: Plan Consistency, Legal Hardening, SMS, UI Polish
 
 ### Added
 
@@ -47,7 +47,7 @@
 
 ---
 
-## [0.5.0] - 2026-06-05 — Production Launch
+## [0.5.0] - 2026-06-05: Production Launch
 
 ### Added
 
@@ -68,7 +68,7 @@
 
 ---
 
-## [0.4.1] - 2026-05-24 — Edge Hotfix
+## [0.4.1] - 2026-05-24: Edge Hotfix
 
 ### Fixed
 
@@ -77,7 +77,7 @@
 
 ---
 
-## [0.4.0] - 2026-05-20 — Cryptographic Overhaul & Auth UX
+## [0.4.0] - 2026-05-20: Cryptographic Overhaul & Auth UX
 
 ### Breaking
 
@@ -89,7 +89,7 @@
 - AAD bound to all AES-GCM operations (prevents DB-layer swap attacks)
 - HKDF domain-separation salt + info on all X25519 key derivations
 - Per-envelope random 32-byte salt (replaces deterministic salt)
-- Versioned envelope format (EnvelopeV2) — KDF params travel with the envelope
+- Versioned envelope format (EnvelopeV2): KDF params travel with the envelope
 - JWT algorithm hardcoded to HS256 (closes alg:none confusion vector)
 - Cloudflare WAF rate-limit rules on auth endpoints
 - Leaked credential blocking via Cloudflare WAF
@@ -103,7 +103,7 @@
 
 ---
 
-## [0.3.3] - 2026-05-16 — Security Hardening & Audit Remediation
+## [0.3.3] - 2026-05-16: Security Hardening & Audit Remediation
 
 - Removed Apple Sign-In aud/iss bypass (account takeover vector)
 - Replaced Google tokeninfo debug endpoint with JWKS local verification
@@ -114,7 +114,7 @@
 
 ---
 
-## [0.3.2] - 2026-05-14 — Architecture Overhaul
+## [0.3.2] - 2026-05-14: Architecture Overhaul
 
 - go_router migration (declarative routing)
 - Riverpod state management
@@ -122,7 +122,7 @@
 
 ---
 
-## [0.3.0] - 2026-05-13 — Production Deploy
+## [0.3.0] - 2026-05-13: Production Deploy
 
 - Secret editing (decrypt → edit → re-encrypt)
 - Production infrastructure live
@@ -130,7 +130,7 @@
 
 ---
 
-## [0.2.2] - 2026-05-11 — HTTP Client & Observability
+## [0.2.2] - 2026-05-11: HTTP Client & Observability
 
 - Dio HTTP client with auto-retry
 - structlog JSON logging with request-ID correlation
@@ -138,7 +138,7 @@
 
 ---
 
-## [0.1.0] - 2026-04 — Initial Release
+## [0.1.0] - 2026-04: Initial Release
 
 - Recipient-based key wrapping (X25519 + HKDF + AES-GCM)
 - Dead-man's switch heartbeat monitor
