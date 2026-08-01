@@ -5,7 +5,7 @@
 | Layer | Algorithm | Details |
 |-------|-----------|---------|
 | Secret content | AES-256-GCM | Client-side, 12-byte random nonce, AAD-bound to secret_id |
-| Key splitting | Shamir Secret Sharing | GF(256), configurable k-of-n threshold; server rejects a secret whose shares cannot meet its own threshold |
+| Key splitting | Shamir Secret Sharing | GF(256). Implemented in client and server, but NOT on the production path: the create flow requires a delivery passphrase per recipient, so the passphrase branch always runs and the Shamir output is discarded. The server rejects any persisted config whose shares cannot meet its threshold, so a revived path fails loudly rather than losing data |
 | Per-recipient wrapping | X25519 + HKDF-SHA256 + AES-GCM | Ephemeral sender key (forward secrecy), domain-separated info/salt |
 | Post-quantum wrapping | ML-KEM-768, hybrid with X25519 | Envelope v3. Hybrid by construction: an attacker must break both halves |
 | Passphrase key derivation | Argon2id | m=64 MiB, t=3, p=1, 32-byte output, per-envelope random 32-byte salt |
