@@ -5,10 +5,11 @@
 | Layer | Algorithm | Details |
 |-------|-----------|---------|
 | Secret content | AES-256-GCM | Client-side, 12-byte random nonce, AAD-bound to secret_id |
-| Key splitting | Shamir Secret Sharing | GF(256), configurable k-of-n threshold (planned) |
+| Key splitting | Shamir Secret Sharing | GF(256), configurable k-of-n threshold; server rejects a secret whose shares cannot meet its own threshold |
 | Per-recipient wrapping | X25519 + HKDF-SHA256 + AES-GCM | Ephemeral sender key (forward secrecy), domain-separated info/salt |
+| Post-quantum wrapping | ML-KEM-768, hybrid with X25519 | Envelope v3. Hybrid by construction: an attacker must break both halves |
 | Passphrase key derivation | Argon2id | m=64 MiB, t=3, p=1, 32-byte output, per-envelope random 32-byte salt |
-| Envelope format | EnvelopeV2 | Versioned JSON — KDF params embedded, AAD-bound |
+| Envelope format | Versioned (v2, v3) | v3 carries the hybrid ML-KEM wrap. v2 (X25519-only) stays readable permanently, since a dead-man's-switch product cannot force re-enrollment |
 | Password storage | Argon2id | Per-user salt, server-side |
 | Data in transit | TLS 1.3 | Enforced via Cloudflare + Render |
 

@@ -31,10 +31,11 @@ Etergis is an end-to-end encrypted dead-man's switch platform. It ensures sensit
 |-------|-----------|
 | Content encryption | AES-256-GCM with AAD binding (secret_id) |
 | Key exchange | X25519 ECDH (ephemeral sender, forward secrecy) |
+| Post-quantum wrap | ML-KEM-768, hybrid with X25519 (Envelope v3) |
 | Key derivation | HKDF-SHA256 with domain-separated salt + info |
 | Vault passphrase | Argon2id (m=64 MiB, t=3, p=1) |
-| Envelope format | EnvelopeV2 — versioned, self-describing KDF params |
-| Key splitting | Shamir Secret Sharing (planned) |
+| Envelope format | Versioned. v3 wraps hybrid X25519 + ML-KEM-768; v2 (X25519-only) stays readable permanently |
+| Key splitting | Shamir Secret Sharing, threshold shares with server-side reconstructability checks |
 
 ## Zero-Knowledge Guarantee
 
