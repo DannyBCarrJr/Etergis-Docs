@@ -29,23 +29,23 @@
 
 ## Authentication
 
-- Short-lived JWT access tokens (60 min) with HS256 signing (algorithm hardcoded — no alg:none confusion)
+- Short-lived JWT access tokens (60 min) with HS256 signing (algorithm hardcoded, so no alg:none confusion)
 - Refresh token rotation (single-use, invalidated on reissue)
 - Google Sign-In and Apple Sign-In via JWKS local verification (no third-party auth proxy)
 - Rate limiting: Cloudflare WAF edge rules + in-app per-IP middleware
 - Leaked credential blocking via Cloudflare WAF
 - NIST SP 800-63B password policy (12-char minimum, zxcvbn scoring, HIBP k-anonymity breach check)
-- Token version column — password reset invalidates all sessions
+- Token version column: password reset invalidates all sessions
 
 ## Access Control (RBAC)
 
 Role hierarchy: `user` → `admin` → `owner`
 
-- **user** — default role, standard access
-- **admin** — user management, billing overview, server health
-- **owner** — can grant internal plans, promote/demote admins, full authority
-- **First owner:** Bootstrapped at startup via `BOOTSTRAP_ADMIN_EMAIL` — idempotent, audited
-- **Subsequent admins:** Promoted via admin console — owner-only, audited
+- **user**: default role, standard access
+- **admin**: user management, billing overview, server health
+- **owner**: can grant internal plans, promote/demote admins, full authority
+- **First owner:** Bootstrapped at startup via `BOOTSTRAP_ADMIN_EMAIL`. Idempotent and audited
+- **Subsequent admins:** Promoted via admin console. Owner-only and audited
 - **No env-based fallback.** Role state lives in the DB only.
 
 ## Infrastructure Security
@@ -61,11 +61,11 @@ Role hierarchy: `user` → `admin` → `owner`
 ## Threat Model
 
 **What we defend against:**
-- Server compromise (DB dump) — attacker gets ciphertext + encrypted envelopes, must brute-force Argon2id to get KEK
-- Network interception — TLS 1.3 end-to-end, HSTS preload
-- DB-layer swap attacks — AAD binding prevents moving wrapped keys between secrets/recipients
-- Credential stuffing — Cloudflare WAF rate limits + leaked credential blocking
-- Offline brute-force of vault passphrase — Argon2id m=64 MiB makes GPU/ASIC attacks economically prohibitive
+- Server compromise (DB dump): attacker gets ciphertext + encrypted envelopes, must brute-force Argon2id to get KEK
+- Network interception: TLS 1.3 end-to-end, HSTS preload
+- DB-layer swap attacks: AAD binding prevents moving wrapped keys between secrets/recipients
+- Credential stuffing: Cloudflare WAF rate limits + leaked credential blocking
+- Offline brute-force of vault passphrase: Argon2id m=64 MiB makes GPU/ASIC attacks economically prohibitive
 
 **What we do NOT defend against:**
 - Compromised client device (if your phone is rooted and owned, all bets are off)
@@ -95,4 +95,4 @@ Rotate immediately if:
 
 ---
 
-© 2025–2026 Carr Digital LLC. All rights reserved.
+Copyright 2025-2026 Carr Digital LLC. Licensed CC BY-ND 4.0; see LICENSE.

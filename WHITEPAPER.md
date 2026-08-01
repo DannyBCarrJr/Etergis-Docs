@@ -1,6 +1,7 @@
 # Etergis: Secure Secret Orchestration with Dead‑Man's‑Switch Controls
 
-> **Document version:** 2026-06-09 — reflects v0.5.2 implementation
+> **Document version:** 2026-08-01. Cryptographic sections reflect Envelope v3
+> (hybrid X25519 + ML-KEM-768); remaining sections describe the v0.5.2 baseline.
 >
 > Public technical reference for security reviewers and prospective users.
 
@@ -81,7 +82,7 @@ Etergis enforces end-to-end protection with three pillars:
 - **Audit Journal:** Append-only log of all events, signatures, and state
   changes. Exportable for SOC and compliance.
 
-### Cryptographic Baseline (v0.4.0 — actual implementation)
+### Cryptographic Baseline (v0.4.0, actual implementation)
 
 This section was rewritten in May 2026 to match the shipped code. Previous
 versions of this document made aspirational claims (e.g. Shamir Secret Sharing
@@ -136,7 +137,7 @@ authoritative.
   NOT readable by v0.4+. v0.1 → v0.4 is a clean break; existing users
   re-enrolled their vaults at upgrade.
 
-#### Threshold cryptography (planned — not in current production through v0.4)
+#### Threshold cryptography (planned, not on the production path)
 - **Status:** Recipient-based key wrapping ships today. Shamir Secret Sharing
   of the DEK is a planned enhancement, primarily to support custodian-based
   release without the recipient needing to be online at release time.
@@ -152,7 +153,7 @@ authoritative.
 #### Login passwords (server-stored, NOT user data encryption)
 - **Algorithm:** Argon2id (via Python passlib, server-side)
 - **Pepper:** Optional, configured via environment variable
-- **Policy:** NIST SP 800-63B modern approach — 12-char minimum, 128-char
+- **Policy:** NIST SP 800-63B modern approach: 12-char minimum, 128-char
   maximum, no composition rules, zxcvbn entropy scoring, HIBP breach check
   via k-anonymity API.
 
@@ -165,13 +166,19 @@ authoritative.
 1. User registers with email + password (NIST 800-63B policy enforced).
 2. ToS / Privacy acceptance recorded with timestamp + version.
 3. User sets a separate **vault passphrase** (also under NIST 800-63B policy).
-4. Client generates an X25519 keypair locally.
-5. Public key uploaded to server (used by other users to wrap secrets FOR
-   this user).
-6. Private key seed encrypted with vault-passphrase-derived KEK → EnvelopeV2.
-7. EnvelopeV2 uploaded to server's `UserKeyBackup` table for cross-device
-   recovery. Server cannot decrypt the envelope without the user's
-   passphrase.
+4. Client generates an X25519 keypair locally, and an ML-KEM-768 keypair
+   alongside it.
+5. Both public keys uploaded to server (used to wrap secrets FOR this user).
+   The ML-KEM encapsulation key is optional: a client that has not uploaded one
+   is wrapped X25519-only, and this is never forced. A dead-man's-switch product
+   cannot require re-enrollment, because the owner may not be there to do it.
+6. Each private seed is encrypted with a vault-passphrase-derived KEK into its
+   own Argon2id-wrapped EnvelopeV2: one for the X25519 seed, one for the
+   2,400-byte ML-KEM secret key.
+7. Both envelopes uploaded to the server's `UserKeyBackup` table for
+   cross-device recovery, in parallel columns. Holding both is what enables
+   Envelope v3 hybrid wrapping; the server cannot decrypt either without the
+   user's passphrase.
 8. Optional: device-binding via WebAuthn (planned for v0.5+).
 
 ### 2) Secret ingestion
@@ -217,7 +224,7 @@ authoritative.
 - Prevent unilateral disclosure by any single party, including the service
   operator.
 - Maintain recoverability when one or more recipients are unavailable
-  (full coverage requires Shamir SSS — planned).
+  (full coverage requires Shamir SSS, which is planned).
 - Resist phishing and device compromise through multi-factor and out-of-band
   approvals.
 - Ensure tamper-evident operations through signed journals.
@@ -267,8 +274,14 @@ authoritative.
 ## Implementation Notes
 
 - **Client platforms:** Flutter web (production at app.etergis.com), iOS (App Store review), Android (Google Play closed testing). CLI is on the roadmap.
-- **Interoperability:** QR spec for share encoding planned for v0.5+ (when SSS
-  ships). Recipient-based wraps today use the EnvelopeV2 JSON format.
+- **Interoperability:** QR spec for share encoding planned for v0.5+.
+- **Envelope versions in use today:** the owner's own key backup is hybrid
+  (Envelope v3, X25519 + ML-KEM-768). Recipient-based wraps still use the
+  EnvelopeV2 JSON format, X25519-only. Extending the hybrid wrap to the
+  recipient path is deliberately deferred, not overlooked: recipient delivery is
+  passphrase-based (Argon2id) by design, so the post-quantum gain there is
+  smaller than on the owner's long-lived at-rest copy, which is the material
+  harvest-now-decrypt-later target.
 - **Availability:** Multi-region orchestration with zero-secrets architecture.
 - **Resilience:** Heartbeat grace windows, staggered notifications, and
   emergency pause with quorum.
@@ -300,7 +313,7 @@ authoritative.
 ## Appendix B: Changelog of cryptographic-relevant changes
 
 - **2026-06-07 (v0.5.2):** Owner role added above admin. Push notifications via
-  Firebase (no cryptographic impact — notification metadata only, no secret
+  Firebase (no cryptographic impact: notification metadata only, no secret
   content transmitted via push). RFC 9116 security.txt PGP-signed with Ed25519.
 - **2026-06-05 (v0.5.0):** Production launch. No cryptographic changes from
   v0.4.0. Rate limiting fully restored on all auth endpoints (Cloudflare WAF +
@@ -308,7 +321,7 @@ authoritative.
 - **2026-05-20 (v0.4.0):** Major crypto modernization. PBKDF2 → Argon2id for
   KEK derivation. AAD added to all AES-GCM operations. HKDF domain-separation
   salt + info. Versioned envelope format (EnvelopeV2). NIST 800-63B password
-  policy. Resend email migration. Clean break — v0.1 envelopes are not readable.
+  policy. Resend email migration. Clean break: v0.1 envelopes are not readable.
 - **2026-05-16 (v0.3.3):** Closed Apple Sign-In aud/iss bypass (account-takeover
   vector). Replaced Google tokeninfo debug endpoint with JWKS local
   verification. Prevented silent account linking by email. JWT algorithm
