@@ -78,4 +78,20 @@ If you discover a security vulnerability, please report it responsibly:
 
 ---
 
-© 2025–2026 Carr Digital LLC. All rights reserved.
+## License
+
+Documentation in this repository is licensed
+**[CC BY-ND 4.0](https://creativecommons.org/licenses/by-nd/4.0/)**
+(`SPDX-License-Identifier: CC-BY-ND-4.0`), full text in [LICENSE](LICENSE).
+
+You may read, quote, cite and redistribute these documents verbatim, including
+commercially, with attribution to Carr Digital LLC. You may not distribute modified
+versions. The restriction exists for one reason: a modified security architecture
+document that still carries the Etergis name would misrepresent what the product
+actually does. Quoting for review, analysis or commentary is unaffected.
+
+GitHub does not display a licence badge for this repository because its detection only
+covers the CC variants listed on choosealicense.com, which excludes NoDerivatives. The
+licence applies regardless.
+
+© 2025-2026 Carr Digital LLC.
