@@ -1,5 +1,129 @@
 # Changelog
 
+Public release history. Entries are grouped by milestone, so a single heading may
+cover several store builds.
+
+## [1.1.14] - 2026-07-27: Emergency Keyword Trigger
+
+### Added
+
+- Emergency Keyword Trigger (Family plan): text a private keyword from a verified phone to start a delivery immediately, for moments when opening the app is not safe
+- Phone number verification
+- Trigger alerts deep-link straight to the rings page, where cancel lives
+
+### Security
+
+- Keywords are stored as user-bound HMAC-SHA256 digests keyed with a server-side secret, never as plaintext
+- Inbound SMS webhooks are signature-validated and fail closed when configuration is missing; replays are rejected by message-ID idempotency
+- Per-number lockout and rate limiting run before any keyword comparison, and the comparison is constant-time
+- The trigger is silent to the sender by design. The owner is notified by push and email, with an authenticated cancel window before delivery proceeds
+- Carrier-reserved words (STOP, HELP and similar) are refused at keyword selection
+
+---
+
+## [1.1.13] - 2026-07-18: Sealed Countdown Brand, Days Protected, Widget Overhaul
+
+### Added
+
+- New Sealed Countdown identity across every surface: app, icons, share cards, and landing page
+- Days-protected counter and a reworked home screen widget
+- Opt-in recipient introduction email when a contact is added
+- Safety all-clear notice when a late check-in follows an alert
+- Public `GET /healthz/worker` liveness endpoint, so external monitoring can page when the delivery worker stalls
+
+### Changed
+
+- Terminology: ring center "RELEASED" is now "Sent"; "Streak freeze" is now "Grace period"
+
+---
+
+## [1.1.11] - 2026-07-10: Post-Quantum Hybrid Key Wrapping (Envelope v3)
+
+### Security
+
+- The owner's copy of each secret's data key is now wrapped with a hybrid X25519 + ML-KEM-768 (FIPS 203) construction. An attacker must break both halves. This is the long-lived at-rest copy and therefore the real harvest-now-decrypt-later target
+- The owner's ML-KEM secret key gained its own Argon2id envelope backup alongside the X25519 seed, for cross-device recovery
+- Existing secrets upgrade opportunistically on a later passphrase-gated action. Every re-wrap is verified against the original key before it is persisted, so a wrap the owner could not reopen is never written
+- No forced re-enrollment, permanently. Classical X25519 records stay valid and readable. A dead-man's-switch product cannot require re-enrollment, because the owner may not be there to do it
+- The upgrade endpoint enforces an optimistic no-downgrade guard, so a stale client cannot clobber a wrap another device already upgraded
+- Scope, stated plainly: recipient delivery remains Argon2id passphrase wrapping and is not hybrid. Etergis is not end-to-end post-quantum
+
+### Added
+
+- OpenAPI snapshot contract test: schema drift fails CI
+
+---
+
+## [1.1.10] - 2026-07-05: Home Screen Widgets
+
+### Added
+
+- iOS (WidgetKit) and Android home screen widgets: self-updating countdown, real ring visual, and one-tap "I'm here" check-in
+
+---
+
+## [1.1.8 to 1.1.9] - 2026-07-01 to 07-04: Full-Stack Security Audit Remediation
+
+### Security
+
+- **Server-side release decryption removed, restoring full zero-knowledge.** The release portal now performs the Argon2id unwrap and decryption entirely in the recipient's browser. The server never receives delivery passphrases or plaintext
+- Refresh-token reuse detection: a replayed token revokes the entire session family. Token-version revocation is enforced on every request
+- KDF parameters are bounds-checked on envelope read, so a tampered envelope cannot declare extreme values to force memory exhaustion
+- Constant-work login removes an account-existence timing oracle
+- Durable database-backed rate-limit backstop behind the in-memory limiter, surviving restarts and spanning instances
+- The emailed check-in link no longer mutates state on GET, so link prefetchers cannot reset a deadline on the owner's behalf
+- The server rejects any secret whose wrapped shares could not meet their stated threshold
+- Server-side upload size limits, MFA hardening, and webhook idempotency
+
+---
+
+## [1.1.5 to 1.1.7] - 2026-06-25 to 07-01: All Platforms Live
+
+### Added
+
+- iOS and Android live on the App Store and Google Play alongside web, as of 2026-07-01
+- RevenueCat in-app purchases on iOS and Android
+- Biometric session unlock
+- SMS contacts by phone number (Family plan)
+- Mission Control dashboard
+
+---
+
+## [1.1.4] - 2026-06-17: In-App Review, Haptics, Accessibility
+
+### Added
+
+- In-app review prompts, haptic feedback, and ring accessibility improvements
+- Welcome email
+
+### Fixed
+
+- Delivery single point of failure
+
+---
+
+## [1.1.0] - 2026-06-15: Rings and Lifeline
+
+### Added
+
+- Rings and Lifeline convergence: check-ins and delivery unified under a ring model
+- Plan gating across ring types
+- Encryption export compliance declaration
+
+---
+
+## [1.0.0 to 1.0.2] - 2026-06-10 to 06-13: Ring System and Safety Check-In
+
+### Added
+
+- Ring system with the Safety Check-In ring type
+- Navigation and retention overhaul
+- TOTP multi-factor authentication with single-use backup codes
+- Admin portal
+- Email template overhaul and landing polish
+
+---
+
 ## [0.5.2] - 2026-06-07: Security Compliance, Owner Role, Push Notifications
 
 ### Added

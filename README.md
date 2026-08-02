@@ -39,17 +39,20 @@ matters.
 | Post-quantum wrap | ML-KEM-768, hybrid with X25519 (Envelope v3) |
 | Key derivation | HKDF-SHA256 with domain-separated salt + info |
 | Vault passphrase | Argon2id (m=64 MiB, t=3, p=1) |
-| Recipient delivery | Passphrase-based (Argon2id), X25519-wrapped |
-| Envelope format | Versioned. v3 wraps hybrid X25519 + ML-KEM-768; v2 (X25519-only) stays readable permanently |
+| Recipient delivery | Passphrase-based (Argon2id). A keyed X25519 delivery path exists in code but is not reachable from the app |
+| Private-key backup | Argon2id EnvelopeV2, one envelope each for the X25519 seed and the ML-KEM secret key |
+| DEK wrap versions | Versioned. `wrap_version` 3 is hybrid X25519 + ML-KEM-768; classical X25519 wraps stay readable permanently |
 | Key splitting | Shamir Secret Sharing: implemented in client and server, **not on the production path** (see below) |
 
 Two points that are easy to get wrong, so they are stated plainly here.
 
-**Post-quantum coverage is partial and deliberate.** The owner's own key backup is
-wrapped hybrid, X25519 plus ML-KEM-768, because that is the long-lived copy sitting at
-rest and therefore the real harvest-now-decrypt-later target. Recipient wraps remain
-X25519-only for now. Extending the hybrid wrap to the recipient path is deferred, not
-overlooked.
+**Post-quantum coverage is partial and deliberate.** The owner's own copy of each
+secret's data key is wrapped hybrid, X25519 plus ML-KEM-768, because that is the
+long-lived copy sitting at rest and therefore the real harvest-now-decrypt-later target.
+The owner's private keys are a separate thing: each is backed up in its own Argon2id
+envelope under the vault passphrase, not a hybrid one. Recipient delivery wraps are
+Argon2id passphrase wraps and are not hybrid either. Extending hybrid wrapping to the
+recipient path is deferred, not overlooked.
 
 **Shamir Secret Sharing is implemented but not reachable.** The split, combine, and
 server-side reconstructability checks all exist, but the create flow requires a delivery
