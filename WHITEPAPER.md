@@ -291,8 +291,8 @@ the owner's private keys are backed up.
 6. Each private seed is encrypted with a vault-passphrase-derived KEK into its
    own Argon2id EnvelopeV2: one for the X25519 seed, one for the 2400-byte
    ML-KEM decapsulation key.
-7. Both envelopes uploaded to the server's `UserKeyBackup` table for
-   cross-device recovery, in parallel columns. Holding both is what enables
+7. Both envelopes are uploaded to the server's key-backup store for
+   cross-device recovery, held side by side. Holding both is what enables
    hybrid DEK wrapping; the server cannot decrypt either without the user's
    passphrase. A client that re-uploads only its X25519 envelope does not clear
    a stored ML-KEM envelope, so a v2-only client cannot silently downgrade the
@@ -514,8 +514,8 @@ to phone custody and is covered by the cancel window.
 
 ## Appendix B: Changelog of cryptographic-relevant changes
 
-- **2026-08-19 (1.1.20+123, all stores):** client-side hardening from an
-  August field incident. Session restore now distinguishes a server-rejected
+- **2026-08-19 (1.1.20+123, all stores):** client-side session and unlock
+  hardening. Session restore now distinguishes a server-rejected
   token from an unreachable server, and only the server's own 401 verdict
   clears stored tokens; transport failures leave the session intact for the
   next cold start. Vault unlock walks a recovery ladder on authentication
