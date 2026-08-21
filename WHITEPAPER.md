@@ -1,8 +1,7 @@
 # Etergis: Secure Secret Orchestration with Dead‑Man's‑Switch Controls
 
-> **Document version:** 2026-08-02. Describes the implementation shipped as of
-> 1.1.14+113 on web, API, and Android. iOS is live at 1.1.13+111 with 1.1.14 in
-> App Store review.
+> **Document version:** 2026-08-20. Describes the implementation shipped as of
+> 1.1.20+123, live on web, iOS, and Android since 2026-08-19.
 >
 > Public technical reference for security reviewers and prospective users.
 >
@@ -120,7 +119,7 @@ Etergis enforces end-to-end protection with three pillars:
 ### Cryptographic Baseline (actual implementation)
 
 Every algorithm and parameter below is verifiable in the client and server
-source at 1.1.14+113.
+source at 1.1.20+123.
 
 #### Content encryption
 - **Algorithm:** AES-256-GCM
@@ -414,9 +413,14 @@ to phone custody and is covered by the cancel window.
 - Optional TOTP two-factor authentication; WebAuthn is roadmap.
 - Argon2id for any passphrase-derived key, configured above the OWASP minimum,
   with KDF parameters bounds-checked on read.
-- Single-use rotating refresh tokens with reuse detection (a replayed token
-  revokes the whole session family) and version-based revocation enforced on
-  every request.
+- Rotating refresh tokens with per-device session families (since 2026-08-17):
+  each login gets its own refresh chain, and a replayed token revokes only the
+  session it fired in, so reuse detection signals theft rather than ordinary
+  multi-device use. The one exception to single-use is a 60-second,
+  single-use-per-rotation grace for the token just rotated away, so a client
+  killed between the server's rotate and its own persist recovers instead of
+  being signed out. A global token version remains the kill switch for
+  password changes and logout-all, enforced on every request.
 - Layered rate limiting: in-memory per-IP plus a durable database counter that
   survives restarts and spans instances, behind Cloudflare WAF at the edge.
 - Append-only audit trail (unsigned today; signing is roadmap).
@@ -455,8 +459,8 @@ to phone custody and is covered by the cancel window.
 ## Implementation Notes
 
 - **Client platforms:** Flutter web (app.etergis.com), iOS (App Store), and
-  Android (Google Play), all live. Web, API, and Android are on 1.1.14+113; iOS
-  is live at 1.1.13+111 with 1.1.14 in review. A CLI is *(roadmap)*.
+  Android (Google Play), all live on 1.1.20+123 since 2026-08-19. A CLI is
+  *(roadmap)*.
 - **Payments:** Stripe on web, RevenueCat in-app purchases on iOS and Android.
 - **Rate limiting:** application-level per-IP sliding-window middleware for
   paths the Cloudflare edge cannot express, backed by a durable PostgreSQL
@@ -486,6 +490,7 @@ to phone custody and is covered by the cancel window.
 | (PQC) | shipped Jul 2026 | Envelope v3 hybrid X25519 + ML-KEM-768 owner wrap, ML-KEM secret-key backup slot, lazy re-wrap with self-verification and server-side no-downgrade guard |
 | v1.1.13 | shipped Jul 2026 | Days-protected ring, widget overhaul, recipient loop touchpoints |
 | v1.1.14 | shipped Jul 2026 | Emergency Keyword Trigger live (Family plan) |
+| v1.1.15 to v1.1.20 | shipped Aug 2026 | Crash reporting proven on all surfaces (PII-scrubbed), per-device refresh-token session families, client cold-start fix separating a rejected session from an unreachable server, vault-unlock recovery ladder, all-or-nothing passphrase rotation |
 | Next | planned | Signed audit export, CLI MVP, account deletion polish |
 | Later | planned | Policy engine (time locks, multi-approver quorum), Shamir threshold sharing (k-of-n) + QR-encoded shares, WebAuthn / hardware keys, certificate pinning, multi-region |
 | Future | planned | Formal external crypto review, SOC 2 Type II audit, HSM-backed attestations, enterprise SSO, recipient-side keyed hybrid delivery |
@@ -509,6 +514,27 @@ to phone custody and is covered by the cancel window.
 
 ## Appendix B: Changelog of cryptographic-relevant changes
 
+- **2026-08-19 (1.1.20+123, all stores):** client-side hardening from an
+  August field incident. Session restore now distinguishes a server-rejected
+  token from an unreachable server, and only the server's own 401 verdict
+  clears stored tokens; transport failures leave the session intact for the
+  next cold start. Vault unlock walks a recovery ladder on authentication
+  failure (trimmed passphrase, trailing-space variant for a swipe-keyboard
+  artifact, then a fresh server envelope when the local cache is stale),
+  healing cached envelopes on success. Passphrase rotation is all-or-nothing:
+  the new server copy is read back and proven to open on the device before
+  the local cache is touched. The client also stopped requiring a vestigial
+  legacy salt column that EnvelopeV2 carries in-band, and the key-backup
+  endpoint no longer overwrites a stored salt with an empty one.
+- **2026-08-17 (per-device session families):** refresh tokens moved from one
+  per-account slot to a session family per signed-in device. Two devices no
+  longer evict each other, and a replayed refresh token revokes only the
+  session it fired in, so reuse detection signals theft rather than ordinary
+  multi-device use. A rotated-away token gets a single-use 60-second grace so
+  a client killed mid-rotation recovers; the grace is single-use per
+  rotation, so a forked chain is caught on its second replay. Logout is
+  scoped to the calling device; the global token version remains the kill
+  switch for password changes and logout-all.
 - **2026-07-27 (v1.1.14):** Emergency Keyword Trigger live. Keywords stored as
   user-bound HMAC-SHA256 digests keyed with a server-side secret, never
   plaintext. Inbound webhooks are signature-validated and fail closed, replays
