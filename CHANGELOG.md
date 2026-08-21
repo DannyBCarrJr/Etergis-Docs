@@ -3,6 +3,83 @@
 Public release history. Entries are grouped by milestone, so a single heading may
 cover several store builds.
 
+## [1.1.20] - 2026-08-19: Session Resilience and Unlock Recovery
+
+### Fixed
+
+- Signing in on a second device no longer signs the first one out. Refresh tokens moved from one slot per account to a session per signed-in device, so ordinary multi-device use no longer looks like token theft
+- A cold start that cannot reach the API no longer signs the user out. Session restore now distinguishes a server-rejected token from an unreachable server, and only the server's own rejection clears stored credentials
+- Vault unlock recovers from keyboard-mangled passphrases and stale cached envelopes: on failure it retries sensible variants (a trimmed passphrase, the trailing-space artifact of swipe keyboards) and falls back to a fresh server copy, healing the local cache on success. Every rung failing reports a plain "this passphrase doesn't match this vault" instead of a cryptic error
+- Web unlock no longer refuses a valid key backup after a mobile client re-posts it
+
+### Security
+
+- A replayed refresh token now revokes only the session it fired in, which makes reuse detection a real theft signal instead of a side effect of owning two devices. A just-rotated token keeps a single-use 60-second grace so a client killed mid-rotation recovers; a global token version remains the kill switch for password changes and logout-all
+- Logout signs out the calling device only, and takes effect immediately
+- Vault passphrase rotation is all-or-nothing: the new server copy is read back and proven to open on the device before the local cache is touched, so a partial rotation fails loudly at the moment it happens
+- Passphrase fields disable autocorrect and suggestions, and a new passphrase with leading or trailing whitespace draws a visible warning (warned, never trimmed: a deliberate space stays legal)
+
+---
+
+## [1.1.19] - 2026-08-16: Trust Surfaces
+
+### Added
+
+- Lifeline settings state the worst-case delivery time as one number: check-in window plus grace period, computed live as you adjust either
+- The dashboard protection score now includes "Test that a contact can be reached," and arming the Lifeline offers to send a test. The check proves reachability, not decryption, and the copy says so
+- The create flow asks whether each contact can produce their delivery passphrase without you, and the Lifeline manifest reports unconfirmed passphrases as their own category
+- The release portal tells a recipient without the passphrase what their options are, plainly including that neither Etergis nor support can reset or unlock it
+- Crash reporting is operational on all three platforms, with personal data scrubbed before anything is sent
+
+### Changed
+
+- A fresh account's Lifeline defaults now match the product's own advice: 7-day check-in window and 1-hour grace period. Existing accounts are untouched
+
+### Fixed
+
+- A rejected contact create no longer looks like nothing happened: duplicate emails and phone numbers are flagged while typing, and a server refusal reopens the dialog with the reason shown inside it
+
+---
+
+## [1.1.18] - 2026-08-15: Dependency Majors
+
+### Changed
+
+- Framework majors taken deliberately on both tiers (starlette 1.x on the API, go_router 17 in the client), each verified against the specific behavior changes those majors introduced, plus a batch of minor updates. Soaked on dev before promotion
+
+---
+
+## [1.1.16 to 1.1.17] - 2026-08-11 to 08-12: iOS Push Fixed
+
+### Fixed
+
+- iOS push notifications had never worked: from the App Store launch until this release, no iOS device had ever registered a push token. Four stacked defects, from a missing push entitlement in the build to a broken token handoff, every one of them silent. All four are closed, and the fix is confirmed by real device registrations in production rather than inferred from a green build
+- Push registration failures now report at every stage instead of failing silently, which is the more important half: the entitlement fixes one bug, and the reporting is what makes the next one findable
+
+### Changed
+
+- A release build can no longer reach the App Store unless the signed binary carries the production push entitlement. A sandbox-signed store build registers tokens that never receive anything, which reads as success from every angle except the one that matters
+
+---
+
+## [1.1.15] - 2026-08-09: Delivery History, Backend Audit Closed
+
+### Added
+
+- A contact's page now shows delivery history: what was sent, when, and what happened to it. Before this, a test delivery reported "sent" in a vanishing message and left no record, so the only way to ask "did that work?" was to send another one
+
+### Security
+
+- Outbound notifications are rate-capped: 3 per hour to any one contact and 50 per day per account, and sender display names are length-capped and sanitized before they reach the subject line of mail to people who never signed up for anything
+- The delivery retry queue re-checks current state before sending: cancelling a countdown settles the queue at that moment, and removing a recipient withdraws the release link already issued to them
+- A withdrawn release link can no longer be brought back through the expired-link extension flow. Recipients see "no longer available" instead of being offered an extension nobody can grant
+- Social sign-in only attaches to an account that has verified its own email address, closing a path where pre-registering someone else's address could capture their later sign-in
+- Two-factor codes are spent on first use, and five wrong codes in a row start a 15-minute cooldown
+- Password reset links are single-use
+- Refused requests are logged with enough context to tell a real caller from testing, while continuing to withhold credentials and release tokens
+
+---
+
 ## [1.1.14] - 2026-07-27: Emergency Keyword Trigger
 
 ### Added
