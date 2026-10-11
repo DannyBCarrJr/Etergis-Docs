@@ -22,7 +22,6 @@
   <text x="119" y="154" text-anchor="middle" fill="#374151">before anything is uploaded.</text>
 
   <line x1="214" y1="120" x2="262" y2="120" stroke="#1f2937" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="238" y="108" text-anchor="middle" font-size="12" fill="#6b7280">locked box</text>
 
   <!-- Etergis -->
   <rect x="266" y="60" width="230" height="120" rx="10" fill="#f3f4f6" stroke="#4b5563" stroke-width="2"/>
@@ -41,8 +40,7 @@
   <text x="663" y="154" text-anchor="middle" fill="#374151">in an email. Any device.</text>
 
   <line x1="778" y1="120" x2="826" y2="120" stroke="#1f2937" stroke-width="2" marker-end="url(#arrow)"/>
-  <text x="802" y="100" text-anchor="middle" font-size="12" fill="#6b7280">only if you</text>
-  <text x="802" y="114" text-anchor="middle" font-size="12" fill="#6b7280">go quiet</text>
+  <text x="802" y="48" text-anchor="middle" font-size="12" fill="#6b7280">only if you go quiet</text>
 
   <!-- Email -->
   <rect x="830" y="60" width="266" height="120" rx="10" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>
