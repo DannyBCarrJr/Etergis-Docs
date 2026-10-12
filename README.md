@@ -17,6 +17,7 @@ matters.
 
 | Document | Description |
 |----------|-------------|
+| [HOW-IT-WORKS.md](HOW-IT-WORKS.md) | Plain-English walkthrough, start to finish, with a diagram and the two emails a trusted contact receives |
 | [SECURITY.md](SECURITY.md) | Security architecture overview |
 | [WHITEPAPER.md](WHITEPAPER.md) | Technical whitepaper: cryptographic design and threat model |
 | [CHANGELOG.md](CHANGELOG.md) | Public release history |

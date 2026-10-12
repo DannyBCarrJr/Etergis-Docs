@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="600" viewBox="0 0 1120 600" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15">
+  <title>How Etergis works, start to finish</title>
+  <desc>Your information is locked on your phone, Etergis holds the locked box and runs the timer, and if you go quiet your person gets an email with a link and opens it with a passphrase you told them in person. The passphrase never touches Etergis.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2937"/>
+    </marker>
+    <marker id="arrow-dash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b45309"/>
+    </marker>
+  </defs>
+  <rect width="1120" height="600" fill="#ffffff"/>
+
+  <!-- lane label: the box -->
+  <text x="24" y="40" font-size="13" fill="#6b7280" letter-spacing="1">WHAT TRAVELS: A LOCKED BOX</text>
+
+  <!-- You -->
+  <rect x="24" y="60" width="190" height="120" rx="10" fill="#eef2ff" stroke="#4338ca" stroke-width="2"/>
+  <text x="119" y="90" text-anchor="middle" font-weight="700" fill="#1f2937">You, on your phone</text>
+  <text x="119" y="114" text-anchor="middle" fill="#374151">Passwords, documents,</text>
+  <text x="119" y="134" text-anchor="middle" fill="#374151">instructions. Locked here,</text>
+  <text x="119" y="154" text-anchor="middle" fill="#374151">before anything is uploaded.</text>
+
+  <line x1="214" y1="120" x2="262" y2="120" stroke="#1f2937" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Etergis -->
+  <rect x="266" y="60" width="230" height="120" rx="10" fill="#f3f4f6" stroke="#4b5563" stroke-width="2"/>
+  <text x="381" y="90" text-anchor="middle" font-weight="700" fill="#1f2937">Etergis servers</text>
+  <text x="381" y="114" text-anchor="middle" fill="#374151">Hold the locked box and</text>
+  <text x="381" y="134" text-anchor="middle" fill="#374151">run the timer. No key.</text>
+  <text x="381" y="154" text-anchor="middle" fill="#374151">Cannot open it, even for a court.</text>
+
+  <line x1="496" y1="120" x2="544" y2="120" stroke="#1f2937" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Timer -->
+  <rect x="548" y="60" width="230" height="120" rx="10" fill="#f3f4f6" stroke="#4b5563" stroke-width="2"/>
+  <text x="663" y="90" text-anchor="middle" font-weight="700" fill="#1f2937">The countdown</text>
+  <text x="663" y="114" text-anchor="middle" fill="#374151">You check in on your schedule:</text>
+  <text x="663" y="134" text-anchor="middle" fill="#374151">a tap in the app, or a link</text>
+  <text x="663" y="154" text-anchor="middle" fill="#374151">in an email. Any device.</text>
+
+  <line x1="778" y1="120" x2="826" y2="120" stroke="#1f2937" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="802" y="48" text-anchor="middle" font-size="12" fill="#6b7280">only if you go quiet</text>
+
+  <!-- Email -->
+  <rect x="830" y="60" width="266" height="120" rx="10" fill="#ecfdf5" stroke="#047857" stroke-width="2"/>
+  <text x="963" y="90" text-anchor="middle" font-weight="700" fill="#1f2937">Your person gets an email</text>
+  <text x="963" y="114" text-anchor="middle" fill="#374151">A link. No account, no app.</text>
+  <text x="963" y="134" text-anchor="middle" fill="#374151">They open it in a browser and</text>
+  <text x="963" y="154" text-anchor="middle" fill="#374151">type the passphrase. Unlocks there.</text>
+
+  <!-- the check-in loop arrow back from timer to you -->
+  <path d="M 663 180 C 663 230, 119 230, 119 180" fill="none" stroke="#4b5563" stroke-width="1.5" stroke-dasharray="2 4" marker-end="url(#arrow)"/>
+  <text x="391" y="222" text-anchor="middle" font-size="12" fill="#6b7280">each check-in resets the timer; miss one and reminders start, then a grace window</text>
+
+  <!-- lane label: the key -->
+  <text x="24" y="290" font-size="13" fill="#b45309" letter-spacing="1">WHAT NEVER TRAVELS THROUGH ETERGIS: THE KEY</text>
+
+  <!-- passphrase path: you to your person, bypassing everything -->
+  <rect x="24" y="310" width="190" height="90" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+  <text x="119" y="340" text-anchor="middle" font-weight="700" fill="#1f2937">You, in person</text>
+  <text x="119" y="364" text-anchor="middle" fill="#374151">"Here is the passphrase.</text>
+  <text x="119" y="384" text-anchor="middle" fill="#374151">Write it down."</text>
+
+  <line x1="214" y1="355" x2="826" y2="355" stroke="#b45309" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#arrow-dash)"/>
+  <text x="520" y="343" text-anchor="middle" font-size="13" fill="#b45309" font-weight="700">said out loud, written on paper, texted, whatever you choose. Etergis never sees it.</text>
+
+  <rect x="830" y="310" width="266" height="90" rx="10" fill="#fffbeb" stroke="#b45309" stroke-width="2"/>
+  <text x="963" y="340" text-anchor="middle" font-weight="700" fill="#1f2937">Your person, keeping it</text>
+  <text x="963" y="364" text-anchor="middle" fill="#374151">The link alone opens nothing.</text>
+  <text x="963" y="384" text-anchor="middle" fill="#374151">Link plus passphrase opens the box.</text>
+
+  <!-- bottom lane: your own copy -->
+  <text x="24" y="450" font-size="13" fill="#6b7280" letter-spacing="1">YOUR OWN COPY, WHILE YOU ARE ALIVE</text>
+  <rect x="24" y="470" width="340" height="100" rx="10" fill="#f3f4f6" stroke="#4b5563" stroke-width="2"/>
+  <text x="194" y="498" text-anchor="middle" font-weight="700" fill="#1f2937">Your vault passphrase</text>
+  <text x="194" y="522" text-anchor="middle" fill="#374151">Separate from your login. Opens your own</text>
+  <text x="194" y="542" text-anchor="middle" fill="#374151">copy on any device. Etergis cannot reset it:</text>
+  <text x="194" y="562" text-anchor="middle" fill="#374151">forget it and your copy is gone for good.</text>
+
+  <rect x="390" y="470" width="340" height="100" rx="10" fill="#f3f4f6" stroke="#4b5563" stroke-width="2"/>
+  <text x="560" y="498" text-anchor="middle" font-weight="700" fill="#1f2937">Lost phone, not lost vault</text>
+  <text x="560" y="522" text-anchor="middle" fill="#374151">Your keys are backed up, sealed under that</text>
+  <text x="560" y="542" text-anchor="middle" fill="#374151">passphrase. New phone, same passphrase,</text>
+  <text x="560" y="562" text-anchor="middle" fill="#374151">everything comes back. The timer never stopped.</text>
+
+  <rect x="756" y="470" width="340" height="100" rx="10" fill="#f3f4f6" stroke="#4b5563" stroke-width="2"/>
+  <text x="926" y="498" text-anchor="middle" font-weight="700" fill="#1f2937">If Etergis disappeared</text>
+  <text x="926" y="522" text-anchor="middle" fill="#374151">Export your data from Settings. A free,</text>
+  <text x="926" y="542" text-anchor="middle" fill="#374151">open-source tool opens the export on your</text>
+  <text x="926" y="562" text-anchor="middle" fill="#374151">own computer. It contacts nobody.</text>
+</svg>
